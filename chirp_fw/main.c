@@ -17,7 +17,7 @@
 
 //------------ peripherals ----------------
 
-void inline initBuzzer() {
+void static inline initBuzzer() {
     TCCR0A = 0; //reset timer1 configuration
     TCCR0B = 0;
 
@@ -26,7 +26,7 @@ void inline initBuzzer() {
     TCCR0B |= _BV(CS00);    //start timer
 }
 
-void inline static beep() {
+void static inline beep() {
     initBuzzer();
     OCR0B = 48;
     _delay_ms(42);
@@ -34,13 +34,13 @@ void inline static beep() {
     PORTA &= ~_BV(BUZZER);
 }
 
-void inline ledOn() {
+void static inline ledOn() {
   DDRB |= _BV(LED_A) | _BV(LED_K); //forward bias the LED
   PORTB &= ~_BV(LED_K);            //flash it to discharge the PN junction capacitance
   PORTB |= _BV(LED_A);  
 }
 
-void inline ledOff() {
+void static inline ledOff() {
   DDRB &= ~(_BV(LED_A) | _BV(LED_K)); //make pins inputs
   PORTB &= ~(_BV(LED_A) | _BV(LED_K));//disable pullups
 }
@@ -56,7 +56,7 @@ void static chirp(uint8_t times) {
 
 //------------------- initialization/setup-------------------
 
-void inline setupGPIO() {
+void static inline setupGPIO() {
     PORTA |= _BV(PA0);  //nothing
     PORTA &= ~_BV(PA0);                     
     PORTA |= _BV(PA2);  //nothing
@@ -74,7 +74,7 @@ void inline setupGPIO() {
     PORTB &= ~_BV(PB2);
 }
 
-void inline setupPowerSaving() {
+void static inline setupPowerSaving() {
     DIDR0 |= _BV(ADC1D);   //disable digital input buffer on AIN0 and AIN1
     PRR |= _BV(PRTIM1);                 //disable timer1
     PRR |= _BV(PRTIM0);                 //disable timer0
@@ -85,7 +85,7 @@ void inline setupPowerSaving() {
 
 //--------------- sleep / wakeup routines --------------
 
-void inline initWatchdog() {
+void static inline initWatchdog() {
     WDTCSR |= _BV(WDCE);
     WDTCSR &= ~_BV(WDE); //interrupt on watchdog overflow
     WDTCSR |= _BV(WDIE); //enable interrupt
@@ -96,7 +96,7 @@ ISR(WATCHDOG_vect ) {
    // nothing, just wake up
 }
 
-void inline sleep() {
+void static inline sleep() {
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
     sleep_enable();
     MCUCR |= _BV(BODS) | _BV(BODSE);    //disable brownout detection during sleep
@@ -105,7 +105,7 @@ void inline sleep() {
     sleep_disable();
 }
 
-void inline sleepWhileADC() {
+void static inline sleepWhileADC() {
     set_sleep_mode(SLEEP_MODE_ADC);
     sleep_mode();
 }
@@ -285,7 +285,7 @@ uint32_t secondsAfterWatering = 0;
 /**
  * Sets wake up interval to 8s
  **/
-void inline wakeUpInterval8s() {
+void static inline wakeUpInterval8s() {
     WDTCSR &= ~_BV(WDP1);
     WDTCSR &= ~_BV(WDP2);
     WDTCSR |= _BV(WDP3) | _BV(WDP0); //every 8 sec
@@ -295,7 +295,7 @@ void inline wakeUpInterval8s() {
 /**
  * Sets wake up interval to 1s
  **/
-void inline wakeUpInterval1s() {
+void static inline wakeUpInterval1s() {
     WDTCSR &= ~_BV(WDP3);
     WDTCSR &= ~_BV(WDP0);
     WDTCSR |= _BV(WDP1) | _BV(WDP2); //every 1 sec
