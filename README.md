@@ -1,2 +1,4 @@
 # moisture_sensor_firmware
-firmware for chirp! and i2c-moisture-sensor
+This repo is only intended to conveniently create firmware.hex for chirp! and i2c-moisture-sensor.
+
+... to be continued ...
